@@ -5,10 +5,34 @@
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/base:noble",
 	"features": {
+		"ghcr.io/rocker-org/devcontainer-features/r-apt:0": {
+            // See: https://github.com/rocker-org/devcontainer-features/blob/main/src/r-apt/README.md#options
+            //
+            // Use RSupport (incl languageserver and httpgd) spand bspm
+            "vscodeRSupport": "full",
+            "installBspm": true,
+            "installREnv": true,
+            //
+            // But turn off Radian (R console), devtools, extre Markdown support and debugger
+            // You can add each of these individually or jointly. See the table at
+            // https://github.com/rocker-org/devcontainer-features/blob/main/src/r-apt/README.md#options
+            "installRadian": true,
+            "installDevTools": false,
+            "installRMarkdown": false,
+            "installVscDebugger": false,
+            "useTesting": false
+        }, 
+        "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+        "packages": "fonts-noto-cjk,r-cran-tidyverse,r-cran-tidymodels,r-cran-easystats,r-cran-exclusiontable,r-cran-here,r-cran-rms,r-cran-hmisc,r-cran-mice,r-cran-marginaleffects,r-cran-tinyplot,r-cran-tinytable,r-cran-grf,r-cran-tmle,r-cran-superlearner,r-cran-matchit,r-cran-weightit,r-cran-cbps,r-cran-clarify"
+    },
+
 		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
 		"ghcr.io/devcontainers-extra/features/uv:1": {}, 
 		"ghcr.io/devcontainers-extra/features/git-lfs:1": {}
-	},
+	}, 
+    "overrideFeatureInstallOrder": [
+    "ghcr.io/rocker-org/devcontainer-features/r-apt"
+],
 	"customizations": {
 		"vscode": {
 			"extensions": [

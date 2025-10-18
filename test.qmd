@@ -3,10 +3,23 @@ title: "Untitled"
 format: html
 ---
 
-# Hello Quarto
+# Introduction
+
+This is the first Quarto document of causal inference using machine learning such as Meta learner.
+
+## Data preparation
+
+### import packages
 
 ```{python}
 import pandas as pd
 import polars as pl
+import tableone
+```
+
+### read data
+
+```{python}
+rhc = pd.read_csv('rhc.csv')
 
 ```

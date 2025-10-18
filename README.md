@@ -10,3 +10,12 @@ uv add numpy pandas matplotlib scikit-learn numba econml dowhy scipy seaborn plo
 uv sync
 
 ```
+
+When start this codespace. Do
+
+```bash
+
+. .venv/bin/activate
+uv sync
+
+```

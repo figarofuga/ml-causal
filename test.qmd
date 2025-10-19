@@ -11,6 +11,11 @@ This is the first Quarto document of causal inference using machine learning suc
 
 ### import packages
 
+```{r}
+library(reticulate)
+reticulate::py_require(c("pandas", "polars", "tableone", "marginaleffects", "econml", "dowhy", "matplotlib", "seaborn", "plotnine"))
+```
+
 ```{python}
 import pandas as pd
 import polars as pl

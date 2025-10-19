@@ -41,7 +41,8 @@
 				"ms-python.vscode-pylance",
 				"ms-python.debugpy",
 				"ms-toolsai.jupyter",
-				"quarto.quarto"
+				"quarto.quarto",
+				"REditorSupport.r"
 			]
 		}
 	}

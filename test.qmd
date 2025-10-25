@@ -7,13 +7,16 @@ format: html
 
 This is the first Quarto document of causal inference using machine learning such as Meta learner.
 
-## Data preparation
+## Methods
 
 ### import packages
 
 ```{r}
 library(reticulate)
 reticulate::py_require(c("pandas", "polars", "tableone", "marginaleffects", "econml", "dowhy", "matplotlib", "seaborn", "plotnine"))
+
+reticulate::py_config()
+
 ```
 
 ```{python}
@@ -23,6 +26,93 @@ import tableone
 import marginaleffects
 ```
 
+### read lalonde dataset
+
+```{r}
+library(reticulate)
+```
+
+```{r}
+library(MatchIt)
+lalonde_r <- MatchIt::lalonde
+
+```
+
+## regression model
+
+```{r}
+library(parameters)
+library(rms)
+
+dd <- datadist(lalonde_r)
+options(datadist = "dd")
+
+fit_ols <- rms::ols(re78 ~ treat + age + educ + race + married + nodegree + re74 + re75, data = lalonde_r)
+
+fit_ols_rcs <- rms::ols(re78 ~ treat + rcs(age, 5) + educ + race + married + nodegree + rcs(re74, 5) + rcs(re75, 5), data = lalonde_r)
+
+parameters::compare_parameters(fit_ols, fit_ols_rcs, keep = "treat")
+
+```
+
+## Propensity score matching and weighting
+
+```{r}
+library(parameters)
+library(MatchIt)
+library(WeightIt)
+library(cobalt)
+library(marginaleffects)
+
+mout <- MatchIt::matchit(
+    treat ~ age + educ + race + married + nodegree + re74 + re75, 
+    data = lalonde_r, 
+    # method = "subclass", 
+    # method = "full", 
+    distance = "glm", 
+    estimand = "ATE"
+    )
+
+mdata <- MatchIt::match.data(mout)
+
+fit_match_pre <- lm(re78 ~ treat * (age + educ + race + married +
+                            nodegree + re74 + re75),
+          data = mdata,
+          weights = weights)
+
+fit_match <- avg_comparisons(fit_match_pre,
+                variables = "treat",
+                vcov = ~subclass)
+
+wout <- WeightIt::weightit(
+    treat ~ age + educ + race + married + nodegree + re74 + re75, 
+    data = lalonde_r, 
+    method = "glm",
+    estimand = "ATE"
+)                
+
+fit_weight_pre <- lm_weightit(re78 ~ treat * (age + educ + race + married +
+                                     nodegree + re74 + re75),
+                   data = lalonde_r, weightit = wout)
+
+fit_weight <- avg_comparisons(fit_weight_pre,
+                variables = "treat")                 
+
+modelsummary::modelsummary(
+    fit_match, fit_weight
+)
+
+```
+
+
+```{python}
+
+lalonde_py = r.lalonde_r
+
+lalonde_py.head()
+
+```
+
 ### read data
 
 ```{python}
@@ -30,3 +120,4 @@ rhc = pd.read_csv('rhc.csv')
 rhc.head()
 rhc.describe()
 ```
+

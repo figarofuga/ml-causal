@@ -67,8 +67,7 @@ library(marginaleffects)
 mout <- MatchIt::matchit(
     treat ~ age + educ + race + married + nodegree + re74 + re75, 
     data = lalonde_r, 
-    # method = "subclass", 
-    # method = "full", 
+    method = "full", 
     distance = "glm", 
     estimand = "ATE"
     )
@@ -99,7 +98,8 @@ fit_weight <- avg_comparisons(fit_weight_pre,
                 variables = "treat")                 
 
 modelsummary::modelsummary(
-    fit_match, fit_weight
+    list("PS match" = fit_match, 
+    "PS weight" = fit_weight)
 )
 
 ```

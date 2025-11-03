@@ -29,10 +29,6 @@ import marginaleffects
 ### read lalonde dataset
 
 ```{r}
-library(reticulate)
-```
-
-```{r}
 library(MatchIt)
 lalonde_r <- MatchIt::lalonde
 
@@ -67,10 +63,12 @@ library(marginaleffects)
 mout <- MatchIt::matchit(
     treat ~ age + educ + race + married + nodegree + re74 + re75, 
     data = lalonde_r, 
-    method = "full", 
+    method = "cardinality", 
     distance = "glm", 
-    estimand = "ATE"
+    estimand = "ATT"
     )
+
+cobalt::bal.tab(mout)
 
 mdata <- MatchIt::match.data(mout)
 
@@ -79,16 +77,21 @@ fit_match_pre <- lm(re78 ~ treat * (age + educ + race + married +
           data = mdata,
           weights = weights)
 
+
 fit_match <- avg_comparisons(fit_match_pre,
                 variables = "treat",
                 vcov = ~subclass)
 
+
 wout <- WeightIt::weightit(
     treat ~ age + educ + race + married + nodegree + re74 + re75, 
     data = lalonde_r, 
-    method = "glm",
-    estimand = "ATE"
+    method = "ebal",
+    estimand = "ATT"
 )                
+
+cobalt::bal.tab(wout)
+
 
 fit_weight_pre <- lm_weightit(re78 ~ treat * (age + educ + race + married +
                                      nodegree + re74 + re75),

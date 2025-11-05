@@ -117,13 +117,38 @@ modelsummary::modelsummary(
 library(dplyr)
 library(grf)
 
-X <- model.matrix(~ race + 0, data = dplyr::select(lalonde_r, -re78, -treat))
+X <- model.matrix(~ age + educ + race + married + nodegree + re74 + re75 + 0, data = dplyr::select(lalonde_r, -re78, -treat))
 Y <- lalonde_r$re78
 W <- lalonde_r$treat
 
 fit_grf <- grf::causal_forest(X = X, Y = Y, W = W)
 
-grf::average_treatment_effect(fit_grf)
+grf::average_treatment_effect(fit_grf, target.sample = "overlap")
+
+```
+
+```{r}
+library(dplyr)
+library(tmle)
+
+W <- model.matrix(~ age + educ + race + married + nodegree + re74 + re75 + 0, data = dplyr::select(lalonde_r, -re78, -treat))
+
+Y <- lalonde_r$re78
+A <- lalonde_r$treat
+
+fit_tmle <- tmle::tmle(Y = Y, A = A, W = W, 
+    family = 'gaussian', 
+    Qform = "Y~A+age+educ+raceblack+racehispan+racewhite+married+nodegree+re74+re75", 
+    gform = "A~age+educ+raceblack+racewhite+racehispan+married+nodegree+re74+re75")
+
+
+```
+
+```{r}
+library(dplyr)
+library(AIPW)
+library(easystats)
+
 
 ```
 

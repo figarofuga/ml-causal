@@ -104,7 +104,14 @@ fit_weight_pre <- lm_weightit(re78 ~ treat * (age + educ + race + married +
                    data = lalonde_r, weightit = wout)
 
 fit_weight <- avg_comparisons(fit_weight_pre,
-                variables = "treat")                 
+                variables = "treat")           
+
+
+modelbased::estimate_contrasts(
+    fit_weight_pre, 
+    contrast = "treat", 
+    estimate = "population"
+)      
 
 modelsummary::modelsummary(
     list("PS match" = fit_match, 
@@ -149,6 +156,37 @@ library(dplyr)
 library(AIPW)
 library(easystats)
 
+AIPW_SL <- AIPW$new(Y= lalonde_r$re78,
+                    A= lalonde_r$treat,
+                    W= subset(lalonde_r,select=c("age", "educ", "race", "married", "nodegree", "re74", "re75")), 
+                    Q.SL.library = c("SL.glm"),
+                    g.SL.library = c("SL.glm"),
+                    k_split = 5,
+                    verbose=FALSE)
+                
+
+
+  suppressWarnings({
+  AIPW_SL$stratified_fit()$summary(g.bound = 0.025)
+})
+
+# tmle_fit <- tmle(Y=eager_sim_obs$sim_Y,
+#                  A=eager_sim_obs$sim_A,
+#                  W=eager_sim_obs[,-1:-2], 
+#                  Q.SL.library=c("SL.mean","SL.glm"),
+#                  g.SL.library=c("SL.mean","SL.glm"),
+#                  family="binomial",
+#                  cvQinit = TRUE)
+
+# cat("\nEstimates from TMLE\n")
+# unlist(tmle_fit$estimates$ATE)
+# unlist(tmle_fit$estimates$RR)
+# unlist(tmle_fit$estimates$OR)
+
+# cat("\nEstimates from AIPW\n")
+# a_tmle <- AIPW_tmle$
+#   new(A=eager_sim_obs$sim_A,Y=eager_sim_obs$sim_Y,tmle_fit = tmle_fit,verbose = TRUE)$
+#   summary(g.bound=0.025)
 
 ```
 

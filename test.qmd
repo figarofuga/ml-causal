@@ -191,7 +191,7 @@ a_tmle <- AIPW_tmle$
 ```{r}
 library(reticulate)
 reticulate::py_require(c("pandas", "polars", "tableone", "marginaleffects", 
- "econml", "dowhy", "matplotlib", "seaborn", "plotnine"))
+ "econml", "dowhy", "causal-learn", "matplotlib", "seaborn", "plotnine"))
 
 reticulate::py_config()
 

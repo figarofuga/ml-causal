@@ -206,17 +206,23 @@ import marginaleffects
 
 ```
 
+```{r}
+library(MatchIt)
+lalonde_r <- MatchIt::lalonde
+```
+
 ```{python}
 
 lalonde_py = r.lalonde_r
 
+lalonde_py.describe()
 
 ```
 
 ### read data
 
 ```{python}
-rhc = pd.read_csv('rhc.csv')
+rhc = pl.read_csv('rhc.csv')
 rhc.head()
 rhc.describe()
 ```

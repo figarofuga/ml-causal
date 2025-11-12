@@ -128,13 +128,14 @@ W <- model.matrix(~ age + educ + race + married + nodegree + re74 + re75 + 0, da
 Y <- lalonde_r$re78
 A <- lalonde_r$treat
 
-tmle_fit <- tmle(Y=eager_sim_obs$sim_Y,
-                 A=eager_sim_obs$sim_A,
-                 W=eager_sim_obs[,-1:-2], 
-                 Q.SL.library=c("SL.mean","SL.glm"),
-                 g.SL.library=c("SL.mean","SL.glm"),
-                 family="binomial",
-                 cvQinit = TRUE)
+tmle_fit <- tmle::tmle(Y = Y, A = A, W = W, 
+    family = 'gaussian', 
+    Q.SL.library=c("SL.mean","SL.glm"),
+    g.SL.library=c("SL.mean","SL.glm"),
+    Qform = "Y~A+age+educ+raceblack+racehispan+racewhite+married+nodegree+re74+re75", 
+    gform = "A~age+educ+raceblack+racewhite+racehispan+married+nodegree+re74+re75", 
+    cvQinit = TRUE)
+
 
 
 ```
@@ -222,7 +223,7 @@ lalonde_py.describe()
 ### read data
 
 ```{python}
-rhc = pl.read_csv('rhc.csv')
+rhc = pd.read_csv('rhc.csv')
 rhc.head()
 rhc.describe()
 ```

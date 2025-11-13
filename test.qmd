@@ -212,11 +212,30 @@ library(MatchIt)
 lalonde_r <- MatchIt::lalonde
 ```
 
+
 ```{python}
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 lalonde_py = r.lalonde_r
 
 lalonde_py.describe()
+
+sns.scatterplot(data = lalonde_py, x = 're74', y = 're78', hue = 'treat')
+
+plt.show()
+
+```
+
+```{python}
+import statsmodels.formula.api as smf
+
+formu = 're78 ~ treat + age + educ + race + married + nodegree + re74 + re75'
+
+ols_fit = smf.ols(formula=formu, data = lalonde_py).fit()
+
+ols_fit.summary()
+
 
 ```
 

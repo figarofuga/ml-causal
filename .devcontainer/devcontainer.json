@@ -22,6 +22,7 @@
             "installVscDebugger": false,
             "useTesting": false
         }, 
+		"ghcr.io/rocker-org/devcontainer-features/rstudio-server:0": {},
         "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
         "packages": "fonts-noto-cjk,r-cran-reticulate,r-cran-tidyverse,r-cran-skimr,r-cran-tidymodels,r-cran-easystats,r-cran-exclusiontable,r-cran-here,r-cran-rms,r-cran-hmisc,r-cran-mice,r-cran-marginaleffects,r-cran-modelsummary,r-cran-tinyplot,r-cran-tinytable,r-cran-grf,r-cran-tmle,r-cran-superlearner,r-cran-matchit,r-cran-highs,r-cran-cbps,r-cran-rootsolve,r-cran-weightit,r-cran-aipw,r-cran-cobalt,r-cran-clarify"
     },
@@ -58,7 +59,18 @@
 				}
 			}
 		}
-	}
+	},
+    "postAttachCommand": {
+        "rstudio-start": "rserver"
+    },
+    "forwardPorts": [
+        8787
+    ],
+    "portsAttributes": {
+        "8787": {
+            "label": "RStudio IDE"
+        }
+    }
 
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
